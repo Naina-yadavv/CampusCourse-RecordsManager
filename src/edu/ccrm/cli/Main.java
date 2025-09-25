@@ -6,7 +6,6 @@ import java.util.Scanner;
 import edu.ccrm.io.ImportExportService;
 import edu.ccrm.io.BackupService;
 
-
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -15,7 +14,6 @@ public class Main {
 
         ImportExportService ioService = new ImportExportService();
         BackupService backupService = new BackupService();
-
 
         int choice;
         do {
@@ -46,30 +44,43 @@ public class Main {
                     studentService.addStudent(s);
                     System.out.println("Student added.");
                 }
-                case 2 -> studentService.listStudents()
-                        .forEach(stu -> System.out.println(stu.toString()));
+                case 2 -> {
+                    System.out.println("\nList of Students:");
+                    if (studentService.listStudents().isEmpty()) {
+                        System.out.println("No students added yet.");
+                    } else {
+                        studentService.listStudents().forEach(stu -> System.out.println(stu.toString()));
+                    }
+                }
                 case 3 -> {
                     System.out.print("Enter Course Code: ");
                     String code = sc.nextLine();
                     System.out.print("Enter Title: ");
                     String title = sc.nextLine();
                     System.out.print("Enter Credits: ");
-                    int credits = sc.nextInt(); sc.nextLine();
+                    int credits = sc.nextInt();
+                    sc.nextLine(); // consume newline after nextInt
                     Course c = new Course(code, title, credits, null, Semester.FALL, "CSE");
                     courseService.addCourse(c);
                     System.out.println("Course added.");
                 }
-                case 4 -> courseService.listCourses()
-                        .forEach(c -> System.out.println(c.toString()));
-
+                case 4 -> {
+                    System.out.println("\nList of Courses:");
+                    if (courseService.listCourses().isEmpty()) {
+                        System.out.println("No courses added yet.");
+                    } else {
+                        courseService.listCourses().forEach(crs -> System.out.println(crs.toString()));
+                    }
+                }
                 case 5 -> {
-                  ioService.exportStudents(studentService.listStudents(), "data/exported_students.csv");
+                    System.out.println("Exporting students...");
+                    ioService.exportStudents(studentService.listStudents(), "data/exported_students.csv");
                 }
                 case 6 -> {
-                  backupService.backupFile("data/exported_students.csv", "backups");
+                    System.out.println("Backing up file...");
+                    backupService.backupFile("data/exported_students.csv", "backups");
                 }
                 case 7 -> System.out.println("Exiting...");
-                
                 default -> System.out.println("Invalid choice!");
             }
         } while (choice != 7);
